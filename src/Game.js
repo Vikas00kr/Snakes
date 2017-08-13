@@ -5,11 +5,12 @@ var moveL=false;
 var moveR=false;
 var moveU=false;
 var moveD=false;
-var speed=5   ;
+var speed=8   ;
 var step=16    ;
 var playerx=[]  ;
 var food;
 var endX,endY;
+var score=0
 
 Snake.Game=function(game) {
 var cursors;
@@ -24,8 +25,18 @@ Snake.Game.prototype={
 
 create: function() {
 game.physics.startSystem(Phaser.Physics.ARCADE);
+    
+textStyle_Key = { font: "bold 20px sans-serif", fill: "#46c0f9", align: "center" };
+textStyle_Value = { font: "bold 22px sans-serif", fill: "#fff", align: "center" };     
+    
+    
 var grass=this.add.sprite((this.world.width)*0.5,(this.world.height)*0.5,"background");
 grass.anchor.setTo(0.5);
+    
+scoreText=game.add.text(game.world.centerX-10, game.world.centerY-210, "Score:", textStyle_Key);
+scoreText.anchor.setTo(0.5);
+scoreTextValue = game.add.text(game.world.centerX+40, game.world.centerY-210, score.toString(), textStyle_Value);
+scoreTextValue.anchor.setTo(0.5);    
 
 players = game.add.group();
 players.enableBody = true;
@@ -65,6 +76,9 @@ game.physics.arcade.enable(food);
 },
     
 eatFood: function(){
+score=score+1;
+scoreTextValue.text = score;    
+    
 food.kill();
 sLen.push(1);
 playerx[sLen.length-1]  = players.create((endX),(endY),"player");    
@@ -72,10 +86,18 @@ this.createFood();
 //playerx.unshift(1);
 
 },
+    
+gameOver: function(){
+var gameOver=game.add.text(game.world.centerX, game.world.centerY, "Game Over", textStyle_Key);
+gameOver.anchor.setTo(0.5);
+var reStart=game.add.text(game.world.centerX, game.world.centerY+30, "Press 'CTRL+R' to restart", { font: "bold 18px sans-serif", fill: "#fff", align: "center" } );
+reStart.anchor.setTo(0.5);
+game.paused=true;
+},
 
 update: function() {
-game.physics.arcade.overlap(players,food,this.eatFood,null,this);  
-    game.physics.arcade.collide(players);
+    game.physics.arcade.overlap(players,food,this.eatFood,null,this);  
+    game.physics.arcade.overlap(players,players,this.gameOver,null,this);  
 //game.physics.arcade.overlap(players,food,this.eatFood,null,this);    
 updateDelay++;
 //console.log("work::" + updateDelay % (10));    
@@ -124,10 +146,9 @@ updateDelay++;
         var currX=undefined,currY=undefined;
         for(itr=0;itr<sLen.length;itr++)
         {   
-            console.log('itr'+itr);
             var preX=currX,preY=currY;
             currX=playerx[itr].x, currY=playerx[itr].y;
-         console.log('itr2'+itr);
+         
             if(itr==0){
             playerx[itr].x +=step;    
             }
@@ -143,10 +164,9 @@ updateDelay++;
         var currX=undefined,currY=undefined;
         for(itr=0;itr<sLen.length;itr++)
         {   
-            console.log('itr'+itr);
             var preX=currX,preY=currY;
             currX=playerx[itr].x, currY=playerx[itr].y;
-         console.log('itr2'+itr);
+         
             if(itr==0){
             playerx[itr].y -=step;    
             }
@@ -162,10 +182,9 @@ updateDelay++;
         var currX=undefined,currY=undefined;
         for(itr=0;itr<sLen.length;itr++)
         {   
-            console.log('itr'+itr);
             var preX=currX,preY=currY;
             currX=playerx[itr].x, currY=playerx[itr].y;
-         console.log('itr2'+itr);
+        
             if(itr==0){
             playerx[itr].y +=step;    
             }
@@ -181,10 +200,9 @@ updateDelay++;
         var currX=undefined,currY=undefined;
         for(itr=0;itr<sLen.length;itr++)
         {   
-            console.log('itr'+itr);
             var preX=currX,preY=currY;
             currX=playerx[itr].x, currY=playerx[itr].y;
-         console.log('itr2'+itr);
+         
             if(itr==0){
             playerx[itr].x -=step;    
             }
@@ -201,10 +219,9 @@ updateDelay++;
         var currX=undefined,currY=undefined;
         for(itr=0;itr<sLen.length;itr++)
         {   
-            console.log('itr'+itr);
             var preX=currX,preY=currY;
             currX=playerx[itr].x, currY=playerx[itr].y;
-         console.log('itr2'+itr);
+         
             if(itr==0){
             playerx[itr].x +=step;    
             }
@@ -217,6 +234,26 @@ updateDelay++;
         endY=currY;        
         
 	}     
+
+    if (playerx[0].x >= game.world.width)
+    {
+        playerx[0].x-= game.world.width;
+    }
+
+    else if (playerx[0].x < 0)
+    {
+        playerx[0].x+= game.world.width;
+    }
+
+    else if (playerx[0].y >= game.world.height)
+    {
+        playerx[0].y-= game.world.height;
+    }
+
+    if (playerx[0].y < 0)
+    {
+        playerx[0].y+= game.world.height;
+    }    
     
 
     if (cursors.up.isDown && !moveD)
