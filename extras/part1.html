@@ -1,0 +1,181 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+	<title>Phaser - Making your first game, part 1</title>
+	<script type="text/javascript" src="src/phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+var game = new Phaser.Game(320, 480, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+
+function preload() {
+    game.load.image('player', 'assets/player.png');
+    game.load.image('food', 'assets/police.png');
+    game.load.image('background', 'assets/back.png');
+
+}
+var cursors;
+var player;
+var food;
+var body=[];
+var TBody=[];
+var Slen=5;
+var SBody;
+var gap=10;
+var start=true;
+var moveL=false;
+var moveR=false;
+var moveU=false;
+var moveD=false;
+
+function create() {
+game.physics.startSystem(Phaser.Physics.ARCADE);
+var grass=this.add.sprite((this.world.width)*0.5,(this.world.height)*0.5,"background");
+grass.anchor.setTo(0.5);
+
+
+player=this.add.sprite((this.world.width)*0.5,(this.world.height)*0.5,"player");
+player.anchor.setTo(0.5);
+game.physics.arcade.enable(player);
+player.body.collideWorldBounds = true;
+
+
+
+
+food=this.add.sprite((game.world.randomX)*0.5,(game.world.randomY)*0.5,"food");
+//food.anchor.setTo(0.5);
+game.physics.arcade.enable(food);
+
+Smake();
+cursors = game.input.keyboard.createCursorKeys();
+
+
+}
+
+
+
+function update() {
+	/*	if (cursors.left.isDown)
+        {
+            player.x -= 5;
+		}
+        else if (cursors.right.isDown)
+        {
+            player.x += 5;
+        }
+        else if (cursors.up.isDown)
+        {
+            player.y -= 5;
+        }
+        else if (cursors.down.isDown)
+        {
+            player.y += 5;
+        }*/
+
+    player.body.velocity.setTo(0, 0);
+	if(start){
+	player.x+=2;
+	}
+	if(moveU){
+	player.y -=2;
+	}
+	if(moveD){
+	player.y +=2;
+	}
+	if(moveL){
+	player.x -=2;
+	}
+	else if(moveR){
+	player.x +=2;
+	}
+	
+    player.body.angularVelocity = 0;
+	game.physics.arcade.overlap(player, food,colisionHandle,null,this);
+	Sslide();
+    if (cursors.up.isDown)
+    {   player.y -= 2;
+		start=false;
+		moveU=true;
+		moveD=false;
+		moveL=false;
+		moveR=false;
+		//player.body.velocity.setTo(0,-300);
+        //Sslide();
+    }
+    else if (cursors.down.isDown)
+    {	player.y += 2;
+		start=false;
+		moveD=true;
+		moveU=false;
+		moveL=false;
+		moveR=false;
+        //player.body.velocity.setTo(0,300);
+        //Sslide();
+    }
+    else if (cursors.left.isDown)
+    {	player.x -= 2;
+		start=false;
+		moveL=true;
+		moveD=false;
+		moveU=false;
+		moveR=false;
+        //player.body.velocity.setTo(-300,0);
+		//Sslide();
+    }
+    else if (cursors.right.isDown)
+    {	player.x += 2;
+		start=false;
+		moveR=true;
+		moveD=false;
+		moveL=false;
+		moveU=false;
+        //player.body.velocity.setTo(300,0);
+		//Sslide();
+    }
+}
+function colisionHandle(){
+food.reset((game.world.randomX),(game.world.randomY));
+//Slen+=1;
+}
+
+function Sslide(){
+
+        var part = body.pop();
+
+        part.setTo(player.x, player.y);
+
+        body.unshift(part);
+
+        for (var i = 1; i <= Slen; i++)
+        {	
+            TBody[i].x = (body[i * gap]).x;
+            TBody[i].y = (body[i * gap]).y;
+        }
+
+}
+
+function Smake(){
+
+		for (var i = 1; i <= Slen; i++)
+		{
+        TBody[i] = game.add.sprite((game.world.width)*0.5,(game.world.height)*0.5, 'player');
+        TBody[i].anchor.setTo(0.5, 0.5);
+		}
+		for (var i = 0; i <= Slen * gap; i++)
+		{
+        body[i] = new Phaser.Point(400, 300);
+		}
+}
+
+</script>
+
+</body>
+</html>
