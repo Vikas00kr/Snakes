@@ -22,13 +22,13 @@ Snake.Preloader.prototype = {
 };
 Snake.Preloader.resources = {
 	'image': [
-		['background', 'assets/back.png'],
+		['background', 'assets/img/background/background.png'],
+        ['backgroundM', 'assets/img/background/backM.png'],
+        ['background1', 'assets/img/background/backT.png'],
+        ['background2', 'assets/img/background/back2.png'],
 		['title', 'assets/img/title.png'],
-		['road', 'assets/road.png'],
 		['food', 'assets/police.png'],
-		['player', 'assets/player.png'],
-		['leftBump', 'assets/leftBump.png'],
-		['rightBump', 'assets/rightBump.png']
+		['player', 'assets/player.png']
 	],
 	'spritesheet': [
 		['button-start', 'assets/img/button-start.png', 180, 180],
@@ -39,5 +39,9 @@ Snake.Preloader.resources = {
 		['button-pause', 'assets/img/button-pause.png', 80, 80],
 		['button-audio', 'assets/img/button-sound.png', 80, 80],
 		['button-back', 'assets/img/button-back.png', 70, 70]
-	]
+	],
+    'audio': [
+        ['collect', 'assets/audio/Collect_Food.wav'],
+        ['hit', 'assets/audio/Hit_Hurt.wav']
+    ]
 };

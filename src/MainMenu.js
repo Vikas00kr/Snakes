@@ -4,7 +4,7 @@ Snake.MainMenu.prototype={
 create: function(){
 		var title = this.add.sprite(this.world.width*0.5, (this.world.height-100)*0.5, 'title');
 		title.anchor.set(0.5);
-		title.scale.setTo(0.5,0.5);
+		//title.scale.setTo(0.5,0.5);
 		var highscore = 0;
 
 		var buttonStart = this.add.button(this.world.width-20, this.world.height-20, 'button-start', this.clickStart, this, 1, 0, 2);

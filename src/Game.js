@@ -5,7 +5,7 @@ var moveL=false;
 var moveR=false;
 var moveU=false;
 var moveD=false;
-var speed=8   ;
+var speed=10   ;
 var step=16    ;
 var playerx=[]  ;
 var food;
@@ -27,10 +27,13 @@ create: function() {
 game.physics.startSystem(Phaser.Physics.ARCADE);
     
 textStyle_Key = { font: "bold 20px sans-serif", fill: "#46c0f9", align: "center" };
-textStyle_Value = { font: "bold 22px sans-serif", fill: "#fff", align: "center" };     
+textStyle_Value = { font: "bold 22px sans-serif", fill: "#fff", align: "center" };  
+
+collect = game.add.audio('collect');
+hit = game.add.audio('hit');
     
     
-var grass=this.add.sprite((this.world.width)*0.5,(this.world.height)*0.5,"background");
+var grass=this.add.sprite((this.world.width)*0.5,(this.world.height)*0.5,"background1");
 grass.anchor.setTo(0.5);
     
 scoreText=game.add.text(game.world.centerX-10, game.world.centerY-210, "Score:", textStyle_Key);
@@ -67,15 +70,17 @@ cursors = game.input.keyboard.createCursorKeys();
 
 },
 createFood: function(){
-var randomX = Math.floor(Math.random() * 20 ) * step,
-            randomY = Math.floor(Math.random() * 30 ) * step;
     
-food=this.add.sprite((randomX),(randomX),"food");
+var randomX = (Math.floor(Math.random() * 17 ) * step)+16,
+            randomY = (Math.floor(Math.random() * 23 ) * step)+48;
+    
+food=this.add.sprite((randomX),(randomY),"food");
 //food.anchor.setTo(0.5);
 game.physics.arcade.enable(food);
 },
     
 eatFood: function(){
+collect.play();
 score=score+1;
 scoreTextValue.text = score;    
     
@@ -88,16 +93,20 @@ this.createFood();
 },
     
 gameOver: function(){
+
 var gameOver=game.add.text(game.world.centerX, game.world.centerY, "Game Over", textStyle_Key);
 gameOver.anchor.setTo(0.5);
 var reStart=game.add.text(game.world.centerX, game.world.centerY+30, "Press 'CTRL+R' to restart", { font: "bold 18px sans-serif", fill: "#fff", align: "center" } );
 reStart.anchor.setTo(0.5);
-game.paused=true;
+hit.play();
+hit.onStop.add(this.pauseGame);
 },
-
+pauseGame: function() {
+game.paused=true;    
+},
 update: function() {
     game.physics.arcade.overlap(players,food,this.eatFood,null,this);  
-    game.physics.arcade.overlap(players,players,this.gameOver,null,this);  
+    game.physics.arcade.overlap(playerx[0],players,this.gameOver,null,this);  
 //game.physics.arcade.overlap(players,food,this.eatFood,null,this);    
 updateDelay++;
 //console.log("work::" + updateDelay % (10));    
@@ -235,24 +244,24 @@ updateDelay++;
         
 	}     
 
-    if (playerx[0].x >= game.world.width)
+    if (playerx[0].x >= game.world.width-16)
     {
-        playerx[0].x-= game.world.width;
+        playerx[0].x-= game.world.width-32;
     }
 
-    else if (playerx[0].x < 0)
+    else if (playerx[0].x < 16)
     {
-        playerx[0].x+= game.world.width;
+        playerx[0].x+= game.world.width-32;
     }
 
-    else if (playerx[0].y >= game.world.height)
+    else if (playerx[0].y >= game.world.height-16)
     {
-        playerx[0].y-= game.world.height;
+        playerx[0].y-= game.world.height-64;
     }
 
-    if (playerx[0].y < 0)
+    if (playerx[0].y < 48)
     {
-        playerx[0].y+= game.world.height;
+        playerx[0].y+= game.world.height-64;
     }    
     
 
